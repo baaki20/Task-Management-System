@@ -14,7 +14,6 @@ public class Task {
 
     public Task() { }
 
-    // Constructor without id, timestamps (for insertion)
     public Task(String title, String description, LocalDate dueDate, Status status) {
         this.title = title;
         this.description = description;
@@ -22,7 +21,6 @@ public class Task {
         this.status = status;
     }
 
-    // Full constructor
     public Task(int id, String title, String description, LocalDate dueDate, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
@@ -33,7 +31,6 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
-    // Getters and setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

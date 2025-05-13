@@ -1,4 +1,3 @@
-// src/main/java/com/novatech/dao/util/DBConnectionUtil.java
 package com.novatech.util;
 
 import java.io.IOException;
@@ -31,22 +30,12 @@ public class DBConnectionUtil {
             username        = prop.getProperty("jdbc.username");
             password        = prop.getProperty("jdbc.password");
 
-            // Load the JDBC driver class
             Class.forName(driverClassName);
         } catch (IOException | ClassNotFoundException ex) {
             throw new ExceptionInInitializerError("DB config load failed: " + ex.getMessage());
         }
     }
 
-    private DBConnectionUtil() {
-        // Prevent instantiation
-    }
-
-    /**
-     * Obtain a new database connection.
-     * @return java.sql.Connection
-     * @throws SQLException if acquiring connection fails
-     */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }

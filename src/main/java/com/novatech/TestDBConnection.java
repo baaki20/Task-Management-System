@@ -1,10 +1,6 @@
-/*
- * File: src/main/java/com/novatech/TestDBConnection.java
- */
 package com.novatech;
 
 import com.novatech.util.DBConnectionUtil;
-
 import java.sql.Connection;
 
 public class TestDBConnection {

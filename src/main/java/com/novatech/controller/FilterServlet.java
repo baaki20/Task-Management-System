@@ -11,13 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet("/filter")
 public class FilterServlet extends HttpServlet {
-
     private TaskDAO taskDAO;
 
     @Override
@@ -34,7 +32,6 @@ public class FilterServlet extends HttpServlet {
 
             List<Task> tasks = taskDAO.getAllTasks();
 
-            // Apply status filter if provided
             if (statusFilter != null && !statusFilter.isEmpty() && !statusFilter.equals("ALL")) {
                 Status status = Status.valueOf(statusFilter);
                 tasks = tasks.stream()
