@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @WebServlet("/tasks")
@@ -25,8 +26,7 @@ public class TaskController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
 
         try {
@@ -52,8 +52,7 @@ public class TaskController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String action = req.getParameter("action");
 
@@ -64,7 +63,16 @@ public class TaskController extends HttpServlet {
                 LocalDate dueDate = LocalDate.parse(req.getParameter("dueDate"));
                 Status status = Status.valueOf(req.getParameter("status"));
 
-                Task task = new Task(id, title, description, dueDate, status);
+                Task existingTask = taskDAO.getTaskById(id);
+                if (existingTask == null) {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
+                    return;
+                }
+
+                LocalDateTime createdAt = existingTask.getCreatedAt();
+                LocalDateTime updatedAt = LocalDateTime.now();
+
+                Task task = new Task(id, title, description, dueDate, status, createdAt, updatedAt);
                 taskDAO.updateTask(task);
                 resp.sendRedirect("tasks");
             } else {

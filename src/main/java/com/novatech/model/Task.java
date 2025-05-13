@@ -23,8 +23,7 @@ public class Task {
     }
 
     // Full constructor
-    public Task(int id, String title, String description, LocalDate dueDate, Status status,
-                LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Task(int id, String title, String description, LocalDate dueDate, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
         this.description = description;
