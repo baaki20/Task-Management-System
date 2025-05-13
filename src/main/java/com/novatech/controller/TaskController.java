@@ -25,45 +25,58 @@ public class TaskController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        String action = req.getParameter("action");
+
         try {
-            List<Task> tasks = taskDAO.getAllTasks();
-            req.setAttribute("tasks", tasks);
-            req.getRequestDispatcher("/task-list.jsp").forward(req, resp);
-
-            String action = req.getParameter("action");
-
             if ("edit".equals(action)) {
                 int id = Integer.parseInt(req.getParameter("id"));
                 Task task = taskDAO.getTaskById(id);
                 req.setAttribute("task", task);
                 req.getRequestDispatcher("/edit-task.jsp").forward(req, resp);
                 return;
-            }
-
-            if ("delete".equals(action)) {
+            } else if ("delete".equals(action)) {
                 int id = Integer.parseInt(req.getParameter("id"));
                 taskDAO.deleteTask(id);
                 resp.sendRedirect("tasks");
                 return;
             }
 
+            List<Task> tasks = taskDAO.getAllTasks();
+            req.setAttribute("tasks", tasks);
+            req.getRequestDispatcher("/task-list.jsp").forward(req, resp);
         } catch (SQLException e) {
             throw new ServletException(e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
-        String title = req.getParameter("title");
-        String description = req.getParameter("description");
-        LocalDate dueDate = LocalDate.parse(req.getParameter("dueDate"));
-        Status status = Status.valueOf(req.getParameter("status"));
-
-        Task task = new Task(title, description, dueDate, status);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         try {
-            taskDAO.addTask(task);
-            resp.sendRedirect("tasks");
+            String action = req.getParameter("action");
+
+            if ("update".equals(action)) {
+                int id = Integer.parseInt(req.getParameter("id"));
+                String title = req.getParameter("title");
+                String description = req.getParameter("description");
+                LocalDate dueDate = LocalDate.parse(req.getParameter("dueDate"));
+                Status status = Status.valueOf(req.getParameter("status"));
+
+                Task task = new Task(id, title, description, dueDate, status);
+                taskDAO.updateTask(task);
+                resp.sendRedirect("tasks");
+            } else {
+                String title = req.getParameter("title");
+                String description = req.getParameter("description");
+                LocalDate dueDate = LocalDate.parse(req.getParameter("dueDate"));
+                Status status = Status.valueOf(req.getParameter("status"));
+
+                Task task = new Task(title, description, dueDate, status);
+                taskDAO.addTask(task);
+                resp.sendRedirect("tasks");
+            }
         } catch (SQLException e) {
             throw new ServletException(e);
         }
