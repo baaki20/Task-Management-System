@@ -25,20 +25,36 @@ public class TaskController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             List<Task> tasks = taskDAO.getAllTasks();
             req.setAttribute("tasks", tasks);
             req.getRequestDispatcher("/task-list.jsp").forward(req, resp);
+
+            String action = req.getParameter("action");
+
+            if ("edit".equals(action)) {
+                int id = Integer.parseInt(req.getParameter("id"));
+                Task task = taskDAO.getTaskById(id);
+                req.setAttribute("task", task);
+                req.getRequestDispatcher("/edit-task.jsp").forward(req, resp);
+                return;
+            }
+
+            if ("delete".equals(action)) {
+                int id = Integer.parseInt(req.getParameter("id"));
+                taskDAO.deleteTask(id);
+                resp.sendRedirect("tasks");
+                return;
+            }
+
         } catch (SQLException e) {
             throw new ServletException(e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
         String title = req.getParameter("title");
         String description = req.getParameter("description");
         LocalDate dueDate = LocalDate.parse(req.getParameter("dueDate"));
