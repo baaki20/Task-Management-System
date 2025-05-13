@@ -78,14 +78,7 @@
             color: #6c757d;
         }
     </style>
-    <script>
-        // Redirect to tasks page after a short delay
-        window.onload = function() {
-            setTimeout(function() {
-                window.location.href = 'tasks';
-            }, 1500);
-        }
-    </script>
+
 </head>
 <body>
     <div class="splash-container">
