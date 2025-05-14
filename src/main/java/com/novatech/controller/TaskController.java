@@ -29,6 +29,14 @@ public class TaskController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String action = req.getParameter("action");
+            String sort = req.getParameter("sort");
+            String selectedStatus = req.getParameter("status");
+            if (sort == null) {
+                sort = "asc";
+            }
+            if (selectedStatus == null || selectedStatus.isEmpty()) {
+                selectedStatus = "ALL";
+            }
 
             if ("edit".equals(action)) {
                 int id = Integer.parseInt(req.getParameter("id"));
@@ -53,11 +61,13 @@ public class TaskController extends HttpServlet {
             int totalPages = (int) Math.ceil((double) totalTasks / pageSize);
             int offset = (page - 1) * pageSize;
 
-            List<Task> tasks = taskDAO.getTasksWithPagination(pageSize, offset);
+            List<Task> tasks = taskDAO.getTasksWithPaginationSortingAndStatus(pageSize, offset, sort, selectedStatus);
 
             req.setAttribute("tasks", tasks);
             req.setAttribute("currentPage", page);
             req.setAttribute("totalPages", totalPages);
+            req.setAttribute("sort", sort);
+            req.setAttribute("selectedStatus", selectedStatus);
             req.getRequestDispatcher("/task-list.jsp").forward(req, resp);
         } catch (SQLException e) {
             throw new ServletException(e);

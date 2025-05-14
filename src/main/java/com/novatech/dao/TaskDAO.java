@@ -85,20 +85,35 @@ public class TaskDAO {
         return new Task(id, title, desc, dueDate, status, createdAt, updatedAt);
     }
 
-    public List<Task> getTasksWithPagination(int limit, int offset) throws SQLException {
-        String PAGINATED_SQL = "SELECT * FROM tasks ORDER BY due_date LIMIT ? OFFSET ?";
-        List<Task> tasks = new ArrayList<>();
+    public List<Task> getTasksWithPaginationSortingAndStatus(int pageSize, int offset, String sort, String status) throws SQLException {
+        String orderBy = "ASC";
+        if ("desc".equalsIgnoreCase(sort)) {
+            orderBy = "DESC";
+        }
+
+        String query = "SELECT * FROM tasks";
+        if (!"ALL".equalsIgnoreCase(status)) {
+            query += " WHERE status = ?::task_status";
+        }
+        query += " ORDER BY due_date " + orderBy + " LIMIT ? OFFSET ?";
+
         try (Connection conn = DBConnectionUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(PAGINATED_SQL)) {
-            stmt.setInt(1, limit);
-            stmt.setInt(2, offset);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            int paramIndex = 1;
+            if (!"ALL".equalsIgnoreCase(status)) {
+                stmt.setString(paramIndex++, status);
+            }
+            stmt.setInt(paramIndex++, pageSize);
+            stmt.setInt(paramIndex, offset);
+
             try (ResultSet rs = stmt.executeQuery()) {
+                List<Task> tasks = new ArrayList<>();
                 while (rs.next()) {
                     tasks.add(mapRowToTask(rs));
                 }
+                return tasks;
             }
         }
-        return tasks;
     }
 
     public int getTaskCount() throws SQLException {
