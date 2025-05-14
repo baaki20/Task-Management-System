@@ -27,9 +27,9 @@ public class TaskController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
-
         try {
+            String action = req.getParameter("action");
+
             if ("edit".equals(action)) {
                 int id = Integer.parseInt(req.getParameter("id"));
                 Task task = taskDAO.getTaskById(id);

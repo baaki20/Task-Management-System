@@ -44,9 +44,8 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 10px;
         }
 
         header {
@@ -182,7 +181,7 @@
         }
 
         th, td {
-            padding: 12px 15px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #e9ecef;
         }
@@ -192,6 +191,11 @@
             color: white;
             font-weight: 600;
         }
+
+        table th, table td {
+            font-size: 14px;
+            white-space: nowrap;
+         }
 
         tr:hover {
             background-color: #f8f9fa;
@@ -397,7 +401,6 @@
             }
         }
 
-        // Set min date for due date to today
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('dueDate').setAttribute('min', today);

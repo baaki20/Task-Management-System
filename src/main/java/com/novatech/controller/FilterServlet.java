@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,11 +40,24 @@ public class FilterServlet extends HttpServlet {
                         .collect(Collectors.toList());
             }
 
-            // Apply sorting (due date sorting is already done in the DAO)
-            // Additional sorting could be implemented here if needed
+            if (sortBy != null && !sortBy.isEmpty()) {
+                if ("dueDate".equals(sortBy)) {
+                    if ("desc".equals(sortOrder)) {
+                        tasks = tasks.stream()
+                                .sorted(Comparator.comparing(Task::getDueDate).reversed())
+                                .collect(Collectors.toList());
+                    } else {
+                        tasks = tasks.stream()
+                                .sorted(Comparator.comparing(Task::getDueDate))
+                                .collect(Collectors.toList());
+                    }
+                }
+            }
 
             req.setAttribute("tasks", tasks);
             req.setAttribute("selectedStatus", statusFilter);
+            req.setAttribute("sortBy", sortBy);
+            req.setAttribute("sortOrder", sortOrder);
             req.getRequestDispatcher("/task-list.jsp").forward(req, resp);
         } catch (SQLException e) {
             throw new ServletException(e);
