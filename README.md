@@ -8,7 +8,7 @@ A web-based Task Management System built using Java Servlets, JSP, and JDBC. Des
 
 - **Task Creation**: Add tasks with title, description, due date, and status.
 - **Task Management**: View, edit, and delete tasks easily through a web interface.
-- **Status Filtering**: Filter tasks by status (`Pending`, `Completed`).
+- **Status Filtering**: Filter tasks by status (`Pending`, `In Progress`, and `Completed`).
 - **Due Date Sorting**: Sort tasks by due date (ascending or descending).
 - **RESTful API Handling**: Uses HTTP methods (`GET`, `POST`, `PUT`, `DELETE`) aligned with REST principles.
 - **MVC Architecture**: Clean separation of concerns with Models, Views (JSP), and Controllers (Servlets).
