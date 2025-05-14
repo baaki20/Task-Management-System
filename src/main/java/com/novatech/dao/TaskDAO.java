@@ -84,4 +84,32 @@ public class TaskDAO {
         LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
         return new Task(id, title, desc, dueDate, status, createdAt, updatedAt);
     }
+
+    public List<Task> getTasksWithPagination(int limit, int offset) throws SQLException {
+        String PAGINATED_SQL = "SELECT * FROM tasks ORDER BY due_date LIMIT ? OFFSET ?";
+        List<Task> tasks = new ArrayList<>();
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(PAGINATED_SQL)) {
+            stmt.setInt(1, limit);
+            stmt.setInt(2, offset);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    tasks.add(mapRowToTask(rs));
+                }
+            }
+        }
+        return tasks;
+    }
+
+    public int getTaskCount() throws SQLException {
+        String COUNT_SQL = "SELECT COUNT(*) FROM tasks";
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(COUNT_SQL);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
 }

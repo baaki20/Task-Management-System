@@ -43,8 +43,21 @@ public class TaskController extends HttpServlet {
                 return;
             }
 
-            List<Task> tasks = taskDAO.getAllTasks();
+            int page = 1;
+            int pageSize = 10;
+            if (req.getParameter("page") != null) {
+                page = Integer.parseInt(req.getParameter("page"));
+            }
+
+            int totalTasks = taskDAO.getTaskCount();
+            int totalPages = (int) Math.ceil((double) totalTasks / pageSize);
+            int offset = (page - 1) * pageSize;
+
+            List<Task> tasks = taskDAO.getTasksWithPagination(pageSize, offset);
+
             req.setAttribute("tasks", tasks);
+            req.setAttribute("currentPage", page);
+            req.setAttribute("totalPages", totalPages);
             req.getRequestDispatcher("/task-list.jsp").forward(req, resp);
         } catch (SQLException e) {
             throw new ServletException(e);
